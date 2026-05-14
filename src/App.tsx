@@ -47,18 +47,6 @@ export const App: React.FC = () => {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const addTodos = (values: Todo[]): void => {
-    setTodos(values);
-  };
-
-  const selectTodo = async (value: Todo | null): Promise<void> => {
-    setSelectedTodo(value);
-  };
-
-  const addQuery = (value: string): void => {
-    setQuery(value);
-  };
-
   return (
     <>
       <div className="section">
@@ -69,8 +57,8 @@ export const App: React.FC = () => {
             <div className="block">
               <TodoFilter
                 query={query}
-                setQuery={addQuery}
-                setTodos={addTodos}
+                onQueryChange={setQuery}
+                onTodosChange={setTodos}
               />
             </div>
 
@@ -78,7 +66,7 @@ export const App: React.FC = () => {
               {isLoading && <Loader />}
               <TodoList
                 todos={filterTodos(query, todos)}
-                setSelectedTodo={setSelectedTodo}
+                onChangeSelectedTodo={setSelectedTodo}
                 selectedTodo={selectedTodo}
               />
             </div>
@@ -91,7 +79,7 @@ export const App: React.FC = () => {
           isLoadingUser={isLoadingUser}
           selectedTodo={selectedTodo}
           selectedUser={selectedUser}
-          setSelectedTodo={selectTodo}
+          onChangeSelectedTodo={setSelectedTodo}
         />
       )}
     </>

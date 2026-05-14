@@ -4,22 +4,30 @@ import { getActiveTodos, getCompletedTodos, getTodos } from '../../api';
 
 interface Props {
   query: string;
-  setQuery: (query: string) => void;
-  setTodos: (todos: Todo[]) => void;
+  onQueryChange: (query: string) => void;
+  onTodosChange: (todos: Todo[]) => void;
 }
 
-export const TodoFilter: React.FC<Props> = ({ query, setQuery, setTodos }) => {
+export const TodoFilter: React.FC<Props> = ({
+  query,
+  onQueryChange,
+  onTodosChange,
+}) => {
   const handleSort = (event: React.ChangeEvent<HTMLSelectElement>) => {
     switch (event.target.value) {
       case 'active':
-        getActiveTodos().then(setTodos);
+        getActiveTodos().then(onTodosChange);
         break;
       case 'completed':
-        getCompletedTodos().then(setTodos);
+        getCompletedTodos().then(onTodosChange);
         break;
       case 'all':
       default:
-        getTodos().then(setTodos);
+        getTodos()
+          .then(onTodosChange)
+          .catch(error => {
+            throw error;
+          });
     }
   };
 
@@ -43,7 +51,7 @@ export const TodoFilter: React.FC<Props> = ({ query, setQuery, setTodos }) => {
           className="input"
           placeholder="Search..."
           value={query}
-          onChange={event => setQuery(event.target.value)}
+          onChange={event => onQueryChange(event.target.value)}
         />
         <span className="icon is-left">
           <i className="fas fa-magnifying-glass" />
@@ -55,7 +63,7 @@ export const TodoFilter: React.FC<Props> = ({ query, setQuery, setTodos }) => {
               data-cy="clearSearchButton"
               type="button"
               className="delete"
-              onClick={() => setQuery('')}
+              onClick={() => onQueryChange('')}
             />
           </span>
         )}
